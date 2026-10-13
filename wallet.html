@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple HTML Crypto Wallet</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #f4f4f4; color: #333; }
+        .wallet-container { background: white; border: 1px solid #ccc; padding: 20px; border-radius: 8px; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .balance-card { background: #28a745; color: white; padding: 15px; border-radius: 5px; text-align: center; margin-bottom: 20px; }
+        .balance-card h2 { margin: 5px 0; font-size: 2rem; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, button { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #0056b3; }
+        .keys { background: #eee; padding: 10px; border-radius: 4px; font-size: 0.85rem; word-break: break-all; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="wallet-container">
+        <h1>My HTML Wallet</h1>
+        
+        <!-- Balance Display -->
+        <div class="balance-card">
+            <small>Available Balance</small>
+            <h2 id="balance">0.00 COIN</h2>
+        </div>
+
+        <!-- Wallet Credentials -->
+        <div class="form-group">
+            <label>Your Public Address (Share this to get paid):</label>
+            <div id="publicKey" class="keys">Generating...</div>
+        </div>
+
+        <!-- Send Funds Form -->
+        <h3>Send Transaction</h3>
+        <div class="form-group">
+            <label for="recipient">Recipient Public Address</label>
+            <input type="text" id="recipient" placeholder="0xabc123...">
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount (COIN)</label>
+            <input type="number" id="amount" placeholder="0.00" min="0.01" step="0.01">
+        </div>
+        <button onclick="sendTransaction()">Sign & Send Transaction</button>
+    </div>
+
+    <script>
+        // Simple mock key generation for educational purposes
+        function generateWalletKeys() {
+            // In a production Web3 application, this would use elliptic curve cryptography (ECC)
+            const mockPrivateKey = 'pv_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const mockPublicKey = '0x' + Math.random().toString(16).substring(2, 10).toUpperCase();
+            
+            document.getElementById('publicKey').innerText = mockPublicKey;
+            
+            // Simulating parsing the previous blockchain data to extract the balance
+            calculateMockBalance(mockPublicKey);
+        }
+
+        function calculateMockBalance(address) {
+            // Realistically, you would filter the "Blockchain.chain" data where:
+            // "recipient === address" (adds to balance) and "sender === address" (subtracts from balance)
+            const sampleStartingBalance = 50.00; 
+            document.getElementById('balance').innerText = `${sampleStartingBalance.toFixed(2)} COIN`;
+        }
+
+        function sendTransaction() {
+            const recipient = document.getElementById('recipient').value;
+            const amount = document.getElementById('amount').value;
+
+            if (!recipient || !amount) {
+                alert("Please fill in all transaction fields.");
+                return;
+            }
+
+            // Packaging the structured transaction payload
+            const transactionPayload = {
+                sender: document.getElementById('publicKey').innerText,
+                recipient: recipient,
+                amount: parseFloat(amount),
+                timestamp: new Date().toISOString()
+            };
+
+            // Stringified structure ready to be fed into your Blockchain block data input
+            const stringifiedData = JSON.stringify(transactionPayload);
+            
+            alert(`Transaction Generated!\n\nPass this payload string into your Blockchain block 'Data' field:\n\n${stringifiedData}`);
+            
+            // Reset input form
+            document.getElementById('recipient').value = "";
+            document.getElementById('amount').value = "";
+        }
+
+        // Initialize keys on startup
+        window.onload = generateWalletKeys;
+    </script>
+</body>
+</html>
